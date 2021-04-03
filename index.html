@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://cdn.rawgit.com/zenorocha/clipboard.js/master/dist/clipboard.min.js"></script>
+    <script src="ngclipboard-master\src\ngclipboard.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <title>Flex generator</title>
+</head>
+
+<body ng-app="myApp" ng-controller="MainController">
+
+    <div class="main">
+        <div id="wrapper-two-layer">
+            <div id="switcher">
+                <div class="playground" ng-click="switchTo('playground')" ng-class="{false: 'playground-change-color'}[playgroundOpen]">playground</div>
+                <div class="code" ng-click="switchTo('code')" ng-class="{false: 'code-change-color'}[playgroundOpen]">
+                    {&nbsp;&nbsp;&nbsp;}
+                </div>
+            </div>
+            <div id="code-box" ng-if="!playgroundOpen">
+                <div>
+                    <button class="btn btn-primary" type="button" ngclipboard data-clipboard-target="#code-box">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <div class="stripe-cosmetic"></div>
+                    <br>
+                    <pre><span class="selector">.container</span>  <span class="curly-braces">{</span></pre>
+                    <pre>    display: {{containerStyle.display}};</pre>
+                    <pre>    flex-wrap: {{containerStyle['flex-wrap']}};</pre>
+                    <pre>    flex-direction: {{containerStyle['flex-direction']}};</pre>
+                    <pre>    justify-content: {{containerStyle['justify-content']}};</pre>
+                    <pre>    align-content: {{containerStyle['align-content']}};</pre>
+                    <pre>    align-items: {{containerStyle['align-items']}};</pre>
+                    <span class="curly-braces">}</span>
+                    <pre></pre>
+                </div>
+                <div ng-repeat="item in itemArray">
+                    <pre><span class="selector">.item-{{$index+1}}</span>  <span class="curly-braces">{</span></pre>
+                    <pre>    order: {{item.order}};</pre>
+                    <pre>    flex-grow: {{item['flex-grow']}};</pre>
+                    <pre>    flex-shrink: {{item['flex-shrink']}};</pre>
+                    <pre>    flex-basis: {{item['flex-basis']}};</pre>
+                    <pre>    align-self: {{item['align-self']}};</pre>
+                    <span class="curly-braces">}</span>
+                    <pre></pre>
+                </div>
+            </div>
+            <div id="backup-sandbox">
+                <div id="sand-box" ng-style="containerStyle" ng-if="playgroundOpen">
+                    <div class="cubes" ng-repeat="cube in itemArray" ng-style="cube" ng-click="detectItem($index)">
+                        {{$index+1}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="setup-section">
+            <div class="container-setup">
+                <h4>flex .container</h4>
+                <div class="selectDiv">
+                    <label for="display">display: </label>
+                    <select id="display" ng-click="setDisplay(currentDisplay)" ng-model="currentDisplay" class="select" aria-label="Disabled select example" style="width:auto;">
+                        <option value="" disabled selected>flex</option>
+                        <option ng-repeat="display in displayOptions" ng-value="display">
+                            {{display}}</option>
+                    </select>
+                </div>
+                <div class="selectDiv">
+                    <label for="wrap">flex-wrap: </label>
+                    <select id="wrap" ng-click="setWrap(currentWrapOption)" ng-model="currentWrapOption" style="width:auto;" class="select">
+                        <option value="" disabled selected>nowrap</option>
+                        <option ng-repeat="option in wrapOptions" ng-value="option">
+                            {{option}}</option>
+                    </select>
+                </div>
+                <div class="selectDiv">
+                    <label for="direction">flex-direction: </label>
+                    <select id="direction" ng-click="setDirection(currentDirection)" ng-model="currentDirection" style="width:auto;" class="select">
+                        <option value="" disabled selected>row</option>
+                        <option ng-repeat="direction in directionOptions" ng-value="direction">
+                            {{direction}}</option>
+                    </select>
+                </div>
+                <div class="selectDiv">
+                    <label for="justify">justyfy-content: </label>
+                    <select id="justify" ng-click="setJustifyContent(currentJustifyOption)" ng-model="currentJustifyOption" style="width:auto;" class="select">
+                        <option value="" disabled selected>flex-start</option>
+                        <option ng-repeat="option in justifyContentOptions" ng-value="option">
+                            {{option}}</option>
+                    </select>
+                </div>
+                <div class="selectDiv">
+                    <label for="align">align-content: </label>
+                    <select id="align" ng-click="setAlignContent(currentAlignOption)" ng-model="currentAlignOption" style="width:auto;" class="select">
+                        <option value="" disabled selected>flex-start</option>
+                        <option ng-repeat="option in alignContentOptions" ng-value="option">
+                            {{option}}</option>
+                    </select>
+                </div>
+                <div class="selectDiv">
+                    <label for="align-item">align-items: </label>
+                    <select id="align-item" ng-click="setAlignItems(currentAlignItemOption)" ng-model="currentAlignItemOption" style="width:auto;" class="select">
+                        <option value="" disabled selected>flex-start</option>
+                        <option ng-repeat="option in alignItemsOptions" ng-value="option">
+                            {{option}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="item-setup" ng-repeat="element in itemArray" ng-show="element.visible">
+                <h4>flex .item-{{$index+1}}</h4>
+                <div id="fields">
+                    <div class="item-form">
+                        <label for="order">order: </label>
+                        <input id="order-field" ng-keyup="setOrder(order)" ng-model="order" type="text" ng-value="{{element['order']}}">
+                    </div>
+                    <div class="item-form">
+                        <label for="grow">flex-grow: </label>
+                        <input ng-keyup="setGrow(grow)" ng-model="grow" class="flex-triple-option" type="text" ng-value="{{element['flex-grow']}}">
+                    </div>
+                    <div class="item-form">
+                        <label for="grow">flex-shrink: </label>
+                        <input ng-keyup="setShrink(shrink)" ng-model="shrink" class="flex-triple-option" type="text" ng-value="{{element['flex-shrink']}}">
+                    </div>
+                    <div class="item-form">
+                        <label for="grow">flex-basis: </label>
+                        <input ng-keyup="setBasis(basis)" ng-model="basis" class="flex-triple-option" type="text" ng-value="{{element['flex-basis']}}">
+                    </div>
+                    <div class="item-form">
+                        <label for="align-self">align-self: </label>
+                        <select ng-click="setAlignSelf(currentAlignSelfOption)" ng-model="currentAlignSelfOption" style="width:auto;" id="align-self-id">
+                            <option value="" disabled selected>{{element['align-self']}}</option>
+                            <option ng-repeat="option in alignSelfOptions" ng-value="option">
+                                {{option}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="sub-section">
+                <button ng-click="addItem()" type="button" class="btn btn-success custom btn1">Add new
+                    item</button>
+                <button ng-click="deleteItem()" type="button" class="btn btn-danger custom btn2">Delete
+                    item</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
